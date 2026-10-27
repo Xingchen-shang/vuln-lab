@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}资料查看 · 漏洞教学靶场{% endblock %}
+{% block content %}
+<h1>📄 用户资料</h1>
+
+{% if not_logged_in %}
+<div class="card">
+  <p>请先 <a href="{{ url_for('lab_idor') }}">登录</a>。</p>
+</div>
+{% elif profile %}
+<div class="card">
+  <h2>{{ profile['name'] }} 的资料</h2>
+  {% if is_flag %}
+    <div class="flag">🏁 {{ flag }}</div>
+  {% else %}
+    <p>{{ profile['secret'] }}</p>
+  {% endif %}
+</div>
+{% else %}
+<div class="card">
+  <p>未找到该用户，或你没有权限访问（修复后会出现此提示）。</p>
+</div>
+{% endif %}
+
+<p><a href="{{ url_for('lab_idor') }}">返回靶场</a></p>
+{% endblock %}

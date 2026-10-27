@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}破解提示 · 漏洞教学靶场{% endblock %}
+{% block content %}
+<h1>💡 破解提示</h1>
+<p class="lead">这里是所有靶场的破解思路和 payload。为了让你独立思考，靶场页面本身不提供任何提示，卡住了再来这里看。</p>
+
+<section class="card">
+  <h2>① SQL 注入</h2>
+  <p class="muted">目标：绕过登录，以 admin 身份登录。</p>
+  <ol>
+    <li>用户名输入 <code>admin' --</code>，密码随意。</li>
+    <li>登录成功即拿到 flag。</li>
+    <li>原理：<code>--</code> 是 SQL 注释符，把后面的密码条件注释掉了。</li>
+  </ol>
+</section>
+
+<section class="card">
+  <h2>② 存储型 XSS</h2>
+  <p class="muted">目标：在留言板注入脚本，读取 Cookie 里的 flag。</p>
+  <ol>
+    <li>留言内容填入下面的 payload 并提交：
+      <pre><code>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code></pre>
+    </li>
+    <li>刷新留言板，脚本执行，弹窗里就能看到 Cookie。</li>
+    <li>flag 在未开启 HttpOnly 的 <code>xss_flag</code> Cookie 中。</li>
+  </ol>
+</section>
+
+<section class="card">
+  <h2>③ CSRF</h2>
+  <p class="muted">目标：利用已登录的 alice，把钱转给 hacker。</p>
+  <ol>
+    <li>登录 <code>alice</code>（受害者）。</li>
+    <li>保持登录，打开「攻击页面」，隐藏表单会自动把钱转给 <code>hacker</code>。</li>
+    <li>退出，登录 <code>hacker</code>，余额 &gt; 0 即拿到 flag。</li>
+  </ol>
+</section>
+
+<section class="card">
+  <h2>④ 暴力破解</h2>
+  <p class="muted">目标：爆破 victim 的弱口令。</p>
+  <ol>
+    <li>用户名已知为 <code>victim</code>。</li>
+    <li>用 Burp 拦截登录请求 → Send to Intruder → 只标记 <code>password</code> 的值。</li>
+    <li>Payloads 用 Simple list，加载弱口令字典（<code>123456</code>、password、admin…）。</li>
+    <li>Start attack，长度明显不同的那条即正确密码，登录后拿 flag。</li>
+  </ol>
+</section>
+
+<section class="card">
+  <h2>⑤ IDOR 越权</h2>
+  <p class="muted">目标：以 alice 身份越权查看 admin 的资料。</p>
+  <ol>
+    <li>以 <code>alice</code> 登录，点「查看我的资料」，请求是 <code>/idor/profile?id=1</code>。</li>
+    <li>用 Burp 拦截（或 Send to Repeater），把 <code>id=1</code> 改成 <code>id=2</code>。</li>
+    <li>发送后即可看到 admin（id=2）的私密资料，里面就是 flag。</li>
+  </ol>
+</section>
+{% endblock %}

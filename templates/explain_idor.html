@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}IDOR 越权原理 · 漏洞教学靶场{% endblock %}
+{% block content %}
+<h1>IDOR 越权（不安全的直接对象引用）</h1>
+
+<section class="card">
+  <h2>原理</h2>
+  <p>应用直接用资源 ID（用户 ID、订单号等）作为参数访问数据，但没有校验"当前登录用户是否有权访问该资源"。攻击者只需修改请求中的 ID，就能访问到本不属于自己的数据。</p>
+  <p>典型请求：<code>/profile?id=1</code>，改成 <code>/profile?id=2</code> 即可看到别人的资料。</p>
+</section>
+
+<section class="card">
+  <h2>成因</h2>
+  <ul>
+    <li>后端只按 ID 查询，未做归属/权限校验。</li>
+    <li>使用可预测的递增 ID 作为资源标识。</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>危害</h2>
+  <ul>
+    <li>水平越权：查看、修改他人的私密数据。</li>
+    <li>垂直越权：以低权限身份访问高权限资源。</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>防御</h2>
+  <ul>
+    <li>服务端校验资源归属：请求的 ID 必须属于当前登录用户。</li>
+    <li>使用不可预测的标识（如 UUID）代替递增 ID。</li>
+  </ul>
+</section>
+{% endblock %}

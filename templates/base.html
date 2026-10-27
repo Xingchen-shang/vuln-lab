@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}漏洞教学靶场{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <nav class="navbar">
+    <a class="brand" href="{{ url_for('index') }}">🛡️ Web 漏洞教学靶场</a>
+    <div class="nav-links">
+      <a href="{{ url_for('index') }}">🏠 靶场首页</a>
+      <a href="{{ url_for('hints') }}">💡 破解提示</a>
+      <a href="{{ url_for('source_index') }}">🔧 源码修复</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="flash flash-{{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    ⚠️ 本应用为安全教学演示，含故意漏洞，请勿部署到公网。
+  </footer>
+</body>
+</html>

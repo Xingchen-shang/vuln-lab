@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}存储型 XSS 靶场 · 漏洞教学靶场{% endblock %}
+{% block content %}
+<h1>🎯 存储型 XSS 靶场</h1>
+<p class="lead">目标：在留言板注入脚本，窃取 Cookie 中的 flag。</p>
+
+<div class="card">
+  <h2>留言板</h2>
+  <form method="post">
+    <label>昵称 <input type="text" name="author" value="匿名"></label>
+    <label>留言 <textarea name="content"></textarea></label>
+    <button type="submit">提交留言</button>
+  </form>
+  <div class="board">
+    {{ rendered | safe }}
+  </div>
+</div>
+{% endblock %}

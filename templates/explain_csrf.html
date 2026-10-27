@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}CSRF 原理 · 漏洞教学靶场{% endblock %}
+{% block content %}
+<h1>跨站请求伪造（CSRF）</h1>
+
+<section class="card">
+  <h2>原理</h2>
+  <p>攻击者诱导已登录用户访问恶意页面，该页面自动向目标站点发起请求。由于浏览器会自动携带目标站点的 Cookie，服务器误以为是用户本人发起的请求，于是执行了转账、改密码等操作。</p>
+</section>
+
+<section class="card">
+  <h2>成因</h2>
+  <ul>
+    <li>服务器只靠 Cookie/Session 判断身份，没有验证请求的"来源意图"。</li>
+    <li>关键操作缺少一次性 CSRF token。</li>
+    <li>Cookie 的 <code>SameSite</code> 属性设置不当。</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>危害</h2>
+  <ul>
+    <li>未授权的转账、修改密码、修改邮箱、发布内容等。</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>防御</h2>
+  <ul>
+    <li>关键操作校验 CSRF token（每个表单/会话一个随机 token）。</li>
+    <li>Cookie 设置 <code>SameSite=Lax/Strict</code>。</li>
+    <li>校验 Referer/Origin 头。</li>
+  </ul>
+</section>
+{% endblock %}

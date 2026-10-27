@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}存储型 XSS 原理 · 漏洞教学靶场{% endblock %}
+{% block content %}
+<h1>存储型 XSS（Stored XSS）</h1>
+
+<section class="card">
+  <h2>原理</h2>
+  <p>攻击者把恶意脚本提交到服务器（如留言、评论），服务器把它保存进数据库，之后<strong>其他用户访问页面时</strong>，这段脚本被当作 HTML 原样输出并执行。</p>
+  <p>因为是"存储"起来的，所有访问该页面的用户都会中招，危害比反射型 XSS 更大。</p>
+</section>
+
+<section class="card">
+  <h2>成因</h2>
+  <ul>
+    <li>服务器保存了用户输入，但输出时未做 HTML 转义（例如模板里用了 <code>| safe</code>，或后端直接拼接 HTML）。</li>
+    <li>对 <code>&lt;script&gt;</code>、事件属性等危险内容未做过滤。</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>危害</h2>
+  <ul>
+    <li>窃取用户 Cookie / 会话令牌（若 Cookie 未开 HttpOnly）。</li>
+    <li>冒充受害者执行任意操作、钓鱼、传播蠕虫。</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>防御</h2>
+  <ul>
+    <li>输出时进行 HTML 编码/转义（如 <code>html.escape</code>）。</li>
+    <li>Cookie 设置 <code>HttpOnly</code>（防脚本读取）、<code>SameSite</code>。</li>
+    <li>配置 CSP 限制脚本来源。</li>
+  </ul>
+</section>
+{% endblock %}

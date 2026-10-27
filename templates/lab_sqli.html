@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}SQL 注入靶场 · 漏洞教学靶场{% endblock %}
+{% block content %}
+<h1>🎯 SQL 注入靶场</h1>
+<p class="lead">目标：绕过登录，以 admin 身份登录，拿到 flag。</p>
+
+<div class="card">
+  <h2>登录</h2>
+  <form method="post">
+    <label>用户名 <input type="text" name="username"></label>
+    <label>密码 <input type="password" name="password"></label>
+    <button type="submit">登录</button>
+  </form>
+  {% if result %}
+    <div class="result {{ 'ok' if success else 'fail' }}">{{ result }}</div>
+    {% if flag %}<div class="flag">🏁 {{ flag }}</div>{% endif %}
+  {% endif %}
+</div>
+{% endblock %}

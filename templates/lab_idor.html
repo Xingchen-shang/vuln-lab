@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}IDOR 越权靶场 · 漏洞教学靶场{% endblock %}
+{% block content %}
+<h1>🎯 IDOR 越权靶场</h1>
+<p class="lead">目标：以 alice 身份登录，越权查看 admin 的私密资料，拿到 flag。</p>
+
+{% if not user_name %}
+<div class="card">
+  <h2>登录</h2>
+  <form method="post">
+    <input type="hidden" name="action" value="login">
+    <button type="submit">以 alice 身份登录</button>
+  </form>
+</div>
+{% else %}
+<div class="card">
+  <h2>当前用户：{{ user_name }}（id={{ user_id }}）</h2>
+  <a class="btn" href="{{ url_for('idor_profile', id=user_id) }}">查看我的资料</a>
+  <a class="btn" href="{{ url_for('idor_logout') }}">退出登录</a>
+</div>
+{% endif %}
+{% endblock %}

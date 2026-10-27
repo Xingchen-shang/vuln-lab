@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}暴力破解原理 · 漏洞教学靶场{% endblock %}
+{% block content %}
+<h1>暴力破解（Brute Force）</h1>
+
+<section class="card">
+  <h2>原理</h2>
+  <p>当登录接口没有任何防爆破措施时，攻击者可以用自动化工具（如 Burp Suite 的 Intruder）对用户名/密码字段批量尝试字典里的常见口令，直到试出正确密码。</p>
+  <p>弱口令（如 123456、password、admin）是暴力破解最容易得手的目标。</p>
+</section>
+
+<section class="card">
+  <h2>成因</h2>
+  <ul>
+    <li>登录接口没有失败次数限制、没有账号锁定。</li>
+    <li>没有验证码、没有登录延时、没有限速。</li>
+    <li>用户使用了弱口令。</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>危害</h2>
+  <ul>
+    <li>账号被盗用，攻击者冒充合法用户登录。</li>
+    <li>泄露用户隐私、业务数据。</li>
+    <li>可作为进一步攻击的跳板。</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>防御</h2>
+  <ul>
+    <li>登录失败次数限制 / 账号锁定。</li>
+    <li>登录失败延时、验证码、限速。</li>
+    <li>强制使用强口令 + 多因素认证。</li>
+  </ul>
+</section>
+{% endblock %}

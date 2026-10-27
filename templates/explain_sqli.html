@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}SQL 注入原理 · 漏洞教学靶场{% endblock %}
+{% block content %}
+<h1>SQL 注入（SQL Injection）</h1>
+
+<section class="card">
+  <h2>原理</h2>
+  <p>当应用把用户输入<strong>直接拼接进 SQL 语句</strong>时，攻击者可以通过构造特殊的输入改变 SQL 语句的结构，从而执行非预期的数据库操作。</p>
+  <p>典型场景是登录查询：</p>
+  <pre><code>SELECT * FROM users WHERE username = '输入的用户名' AND password = '输入的密码'</code></pre>
+  <p>如果用户名为 <code>admin' --</code>，拼出的语句变成：</p>
+  <pre><code>SELECT * FROM users WHERE username = 'admin' --' AND password = '...'</code></pre>
+  <p><code>--</code> 后面的内容被当作注释忽略，密码校验被绕过。</p>
+</section>
+
+<section class="card">
+  <h2>成因</h2>
+  <ul>
+    <li>使用字符串拼接（或 f-string）构造 SQL。</li>
+    <li>未对用户输入做过滤、转义或参数化处理。</li>
+    <li>数据库账号权限过大。</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>危害</h2>
+  <ul>
+    <li>绕过登录验证（认证绕过）。</li>
+    <li>窃取、篡改、删除数据库数据。</li>
+    <li>极端情况下执行系统命令。</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>防御</h2>
+  <ul>
+    <li>使用<strong>参数化查询</strong>（占位符，如 <code>?</code> / <code>%s</code>）。</li>
+    <li>对输入做严格的白名单校验。</li>
+    <li>遵循最小权限原则。</li>
+  </ul>
+</section>
+{% endblock %}

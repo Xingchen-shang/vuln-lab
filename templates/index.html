@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}靶场首页 · 漏洞教学靶场{% endblock %}
+{% block content %}
+<h1>🎯 Web 漏洞教学靶场</h1>
+<p class="lead">选择一个靶场开始挑战：点「搭建靶场」会在新标签页打开靶场；破解后回到这里，在该靶场的卡片下方提交对应 flag。卡住了？去「破解提示」页。</p>
+
+<div class="grid">
+  {% for lab in labs %}
+  <section class="card">
+    <h2>{{ lab.name }}{% if lab.key in solved %}<span class="solved-tag">✅ 已通过</span>{% endif %}</h2>
+    <p class="muted">{{ lab.desc }}</p>
+    <div class="actions">
+      <a class="btn" href="{{ url_for(lab.route) }}" target="_blank" rel="noopener">🚀 搭建靶场</a>
+      <a class="btn secondary" href="{{ url_for('explain', name=lab.key) }}">原理讲解</a>
+    </div>
+    {% if lab.key not in solved %}
+    <form class="flag-form" method="post" action="{{ url_for('submit_flag') }}">
+      <input type="hidden" name="lab" value="{{ lab.key }}">
+      <input type="text" name="flag" placeholder="在此提交该靶场的 FLAG{...}" autocomplete="off" required>
+      <button type="submit" class="btn">提交</button>
+    </form>
+    {% endif %}
+  </section>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <p class="muted">当前进度：{{ solved|length }} / {{ labs|length }}。每个靶场只需在它自己的卡片下提交对应 flag。 <a href="{{ url_for('reset_progress') }}">重置进度</a></p>
+</div>
+{% endblock %}

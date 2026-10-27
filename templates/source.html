@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}源码与修复 · 漏洞教学靶场{% endblock %}
+{% block content %}
+<h1>🔧 漏洞源码查看与在线修复</h1>
+<p class="lead">下面列出五个漏洞的<strong>真实运行时源码</strong>。你可以直接编辑它们来修复漏洞，保存后立即生效。</p>
+
+<div class="card">
+  <h2>选择要查看 / 修改的文件</h2>
+  <div class="nav-links">
+    <a href="{{ url_for('source_view', name='sqli') }}">labs/sqli_lab.py</a>
+    <a href="{{ url_for('source_view', name='xss') }}">labs/xss_lab.py</a>
+    <a href="{{ url_for('source_view', name='csrf') }}">labs/csrf_lab.py</a>
+    <a href="{{ url_for('source_view', name='brute') }}">labs/brute_lab.py</a>
+    <a href="{{ url_for('source_view', name='idor') }}">labs/idor_lab.py</a>
+  </div>
+</div>
+
+{% if name %}
+<div class="card">
+  <h2>labs/{{ name }}_lab.py</h2>
+  <form method="post" action="{{ url_for('source_save', name=name) }}">
+    <textarea name="code" class="code-editor" spellcheck="false">{{ code }}</textarea>
+    <div class="actions">
+      <button type="submit">💾 保存并生效</button>
+      <button type="submit" formaction="{{ url_for('source_reset', name=name) }}" class="secondary">↩️ 恢复原始漏洞代码</button>
+    </div>
+  </form>
+</div>
+{% else %}
+<div class="card">
+  <p>请先在上方选择一个源码文件。</p>
+</div>
+{% endif %}
+
+<div class="card">
+  <h2>💡 修复提示</h2>
+  <ul>
+    <li><strong>SQL 注入</strong>：把字符串拼接改成参数化查询（占位符 <code>?</code>）。</li>
+    <li><strong>存储型 XSS</strong>：对用户输入调用 <code>html.escape()</code> 转义后再拼进 HTML。</li>
+    <li><strong>CSRF</strong>：在转账前校验请求中的 <code>token</code> 与 <code>expected_token</code> 是否一致。</li>
+    <li><strong>暴力破解</strong>：加登录失败次数限制 / 账号锁定 / 验证码 / 限速。</li>
+    <li><strong>IDOR</strong>：校验请求的 <code>profile_id</code> 必须等于当前登录用户的 <code>current_user_id</code>。</li>
+  </ul>
+  <p>保存后会自动热重载模块，回到靶场即可验证漏洞是否已修复。</p>
+</div>
+{% endblock %}
